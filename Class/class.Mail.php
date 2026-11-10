@@ -1,5 +1,6 @@
 <?php
-require_once dirname(__FILE__).'/../vendor/autoload.php';
+require_once dirname(__FILE__) . '/../vendor/autoload.php';
+require_once dirname(__FILE__) . '/../inc.config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -9,15 +10,15 @@ class Mail
 	public static function SendMail($to, $name, $subject, $message)
 	{
 		$mail = new PHPMailer();
-		$mail->IsSMTP();
+		$mail->isSMTP();
 		$mail->SMTPAuth = true;
 		$mail->SMTPSecure = "tls";
-		$mail->Host = "smtp.gmail.com";
-		$mail->Port = 587;
-		$mail->Username = "projectwebprogram@gmail.com";
-		$mail->Password = "akcp xfyy zdhm jnja";
-		$mail->From = "projectwebprogram@gmail.com";
-		$mail->FromName = "TEPI WAKTU PRODUCTION";
+		$mail->Host = app_config('smtp_host');
+		$mail->Port = (int) app_config('smtp_port');
+		$mail->Username = app_config('smtp_username');
+		$mail->Password = app_config('smtp_password');
+		$mail->From = app_config('smtp_from_email');
+		$mail->FromName = app_config('smtp_from_name');
 		$mail->SMTPOptions = array(
 				'ssl' => array(
 				'verify_peer' => false,
@@ -26,20 +27,20 @@ class Mail
 				));
 
 		$mail->WordWrap = 50;
-		$mail->IsHTML(true);
+		$mail->isHTML(true);
 
-		$mail->AddAddress($to, $name);
+		$mail->addAddress($to, $name);
 		$mail->Subject = $subject;
 		$mail->Body = $message;
-		$mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+		$mail->AltBody = strip_tags($message);
 
 		$mail->SMTPDebug = 0;
 
-		if(!$mail->Send()){
-			echo "Message could not be sent.<p>";
-			echo "Mailer Error: " . $mail->ErrorInfo;
-			exit;
+		if (!$mail->send()) {
+			// Lempar exception supaya pemanggil bisa menangani (bukan exit paksa)
+			throw new Exception("Email gagal dikirim: " . $mail->ErrorInfo);
 		}
-	}	
+
+		return true;
+	}
 }
-?>

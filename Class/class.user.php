@@ -5,7 +5,6 @@ class User extends Connection {
     private $password = '';
     private $name = '';
     private $role = '';
-    private $emp;
     private $hasil = false;
     private $message = '';
 
@@ -22,24 +21,33 @@ class User extends Connection {
     }
 
     public function AddUser() {
-        
-        $sql = "INSERT INTO user (email, password, name, role)
-                VALUES ('$this->email', '$this->password', '$this->name', '$this->role')";
-        
-        $this->hasil = mysqli_query($this->connection, $sql);
-        
+        $sql = "INSERT INTO user (email, password, name, role) VALUES (?, ?, ?, ?)";
+
+        $stmt = mysqli_prepare($this->connection, $sql);
+        mysqli_stmt_bind_param($stmt, 'ssss', $this->email, $this->password, $this->name, $this->role);
+
+        $this->hasil = mysqli_stmt_execute($stmt);
+
         if ($this->hasil) {
             $this->message = 'Data berhasil ditambahkan!';
         } else {
             $this->message = 'Data gagal ditambahkan!';
         }
+
+        mysqli_stmt_close($stmt);
+        return $this->hasil;
     }
 
     public function ValidateEmail($inputemail) {
-        $sql = "SELECT * FROM user WHERE email = '$inputemail'";
-        $result = mysqli_query($this->connection, $sql);
+        $sql = "SELECT userid, email, password, name, role FROM user WHERE email = ?";
 
-        if (mysqli_num_rows($result) == 1) {
+        $stmt = mysqli_prepare($this->connection, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $inputemail);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($result && mysqli_num_rows($result) == 1) {
             $this->hasil = true;
             $data = mysqli_fetch_assoc($result);
 
@@ -48,7 +56,9 @@ class User extends Connection {
             $this->name     = $data['name'];
             $this->email    = $data['email'];
             $this->role     = $data['role'];
-        } 
+        }
+
+        mysqli_stmt_close($stmt);
     }
 
     // Method khusus untuk Admin
@@ -58,33 +68,37 @@ class User extends Connection {
     }
 
     public function GetUserByID($userid) {
-        $sql = "SELECT * FROM user WHERE userid = '$userid'";
-        $result = mysqli_query($this->connection, $sql);
-        return $result;
+        $sql = "SELECT userid, email, name, role FROM user WHERE userid = ?";
+
+        $stmt = mysqli_prepare($this->connection, $sql);
+        mysqli_stmt_bind_param($stmt, 'i', $userid);
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_stmt_get_result($stmt);
     }
 
     public function UpdateUser($userid, $nama, $email, $role) {
-        // Proteksi input agar aman saat masuk ke database
-        $id = mysqli_real_escape_string($this->connection, $userid);
-        $n  = mysqli_real_escape_string($this->connection, $nama);
-        $e  = mysqli_real_escape_string($this->connection, $email);
-        $r  = mysqli_real_escape_string($this->connection, $role);
+        $sql = "UPDATE user SET name = ?, email = ?, role = ? WHERE userid = ?";
 
-        $sql = "UPDATE user SET 
-                name = '$n', 
-                email = '$e', 
-                role = '$r' 
-                WHERE userid = '$id'";
-                
-        return mysqli_query($this->connection, $sql);
+        $stmt = mysqli_prepare($this->connection, $sql);
+        mysqli_stmt_bind_param($stmt, 'sssi', $nama, $email, $role, $userid);
+
+        $hasil = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        return $hasil;
     }
 
     // Method untuk menghapus data user (Admin Only)
     public function DeleteUser($userid) {
-        $id = mysqli_real_escape_string($this->connection, $userid);
-        
-        $sql = "DELETE FROM user WHERE userid = '$id'";
-        return mysqli_query($this->connection, $sql);
+        $sql = "DELETE FROM user WHERE userid = ?";
+
+        $stmt = mysqli_prepare($this->connection, $sql);
+        mysqli_stmt_bind_param($stmt, 'i', $userid);
+
+        $hasil = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        return $hasil;
     }
 }
-?>

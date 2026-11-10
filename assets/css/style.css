@@ -1,0 +1,376 @@
+/* ============================================================
+   TEPI WAKTU TEATER — Design System
+   Dark cinematic theater theme (custom stylesheet terpusat)
+   ============================================================ */
+
+/* --- Design Tokens (CSS Variables) --- */
+:root {
+    --bg-body: #0a0e17;
+    --bg-surface: rgba(255, 255, 255, 0.04);
+    --bg-surface-hover: rgba(255, 255, 255, 0.07);
+    --bg-solid: #101728;
+    --border-subtle: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.16);
+
+    --text-primary: #f2f4f8;
+    --text-secondary: #9aa5b8;
+    --text-muted: #6b7689;
+
+    --accent: #f5b942;          /* Stage gold */
+    --accent-dark: #d99e1f;
+    --accent-contrast: #14100a;
+    --info: #38bdf8;
+    --success: #34d399;
+    --danger: #f87171;
+    --warning: #fbbf24;
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 22px;
+    --radius-pill: 50rem;
+
+    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --shadow-pop: 0 18px 45px rgba(0, 0, 0, 0.45);
+
+    --font-body: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+    --font-display: 'Playfair Display', Georgia, serif;
+
+    --transition: 0.25s ease;
+}
+
+/* --- Base --- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font-body);
+    background-color: var(--bg-body);
+    background-image:
+        radial-gradient(ellipse 90% 60% at 50% -10%, rgba(245, 185, 66, 0.10), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 90% 110%, rgba(56, 189, 248, 0.07), transparent 60%),
+        url('../../Background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: normal, normal, normal;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Overlay gelap supaya teks tetap terbaca di atas foto */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(rgba(10, 14, 23, 0.88), rgba(10, 14, 23, 0.92));
+    z-index: -1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: 0.2px;
+}
+
+a {
+    color: var(--info);
+    transition: color var(--transition);
+}
+
+a:hover {
+    color: var(--accent);
+}
+
+.text-accent { color: var(--accent) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+
+/* --- Navbar --- */
+.site-navbar {
+    background-color: rgba(10, 14, 23, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.7rem 0;
+    z-index: 1030;
+}
+
+.site-navbar .navbar-brand {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-primary) !important;
+    letter-spacing: 0.5px;
+}
+
+.site-navbar .navbar-brand .brand-dot {
+    color: var(--accent);
+}
+
+.site-navbar .nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.45rem 0.95rem !important;
+    border-radius: var(--radius-pill);
+    transition: all var(--transition);
+}
+
+.site-navbar .nav-link:hover,
+.site-navbar .nav-link.active {
+    color: var(--text-primary) !important;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.site-navbar .nav-link.active {
+    color: var(--accent) !important;
+}
+
+/* --- Tombol --- */
+.btn {
+    font-weight: 600;
+    border-radius: var(--radius-pill);
+    padding: 0.55rem 1.5rem;
+    transition: all var(--transition);
+    font-size: 0.95rem;
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: var(--accent-contrast) !important;
+    border: none;
+    box-shadow: 0 6px 18px rgba(245, 185, 66, 0.25);
+}
+
+.btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(245, 185, 66, 0.4);
+    color: var(--accent-contrast) !important;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary) !important;
+}
+
+.btn-ghost:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary) !important;
+    transform: translateY(-2px);
+}
+
+/* Kompatibilitas dengan class lama */
+.btn-info-tiket {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark)) !important;
+    color: var(--accent-contrast) !important;
+    border: none !important;
+    border-radius: var(--radius-pill) !important;
+    box-shadow: 0 6px 18px rgba(245, 185, 66, 0.25);
+    transition: all var(--transition);
+}
+
+.btn-info-tiket:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(245, 185, 66, 0.4);
+    color: var(--accent-contrast) !important;
+}
+
+/* --- Konten utama (glassmorphism) --- */
+main {
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    padding: 2rem 1.5rem;
+    margin: 1.75rem auto;
+    width: min(1200px, 94%);
+}
+
+/* --- Kartu --- */
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.card:hover {
+    border-color: var(--border-strong);
+}
+
+.card-interactive:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-pop);
+}
+
+.glass-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+/* --- Form --- */
+.form-control, .form-select {
+    background-color: rgba(0, 0, 0, 0.30);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 1rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: rgba(0, 0, 0, 0.45);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(245, 185, 66, 0.18);
+    color: var(--text-primary) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 0.4rem;
+}
+
+/* --- Tabel (dashboard) --- */
+.table-dark {
+    --bs-table-bg: rgba(0, 0, 0, 0.25);
+    --bs-table-border-color: var(--border-subtle);
+    color: var(--text-primary);
+}
+
+.table thead th {
+    background-color: rgba(0, 0, 0, 0.35);
+    color: var(--accent);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+.table tbody tr {
+    transition: background-color var(--transition);
+}
+
+.table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- Badge --- */
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    padding: 0.45em 0.9em;
+    border-radius: var(--radius-pill);
+}
+
+.badge-status-success { background-color: rgba(52, 211, 153, 0.18) !important; color: var(--success) !important; }
+.badge-status-pending { background-color: rgba(251, 191, 36, 0.18) !important; color: var(--warning) !important; }
+.badge-status-failed  { background-color: rgba(248, 113, 113, 0.18) !important; color: var(--danger) !important; }
+
+/* --- Gambar interaktif --- */
+.img-wrapper {
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    height: 100%;
+}
+
+.img-interactive {
+    transition: transform 0.5s ease;
+}
+
+.img-interactive:hover {
+    transform: scale(1.06);
+}
+
+/* --- Section headers --- */
+.section-eyebrow {
+    color: var(--accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.8rem;
+    font-family: var(--font-body);
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* --- Footer --- */
+.site-footer {
+    background-color: rgba(10, 14, 23, 0.92);
+    border-top: 1px solid var(--border-subtle);
+    padding: 3rem 0 1.5rem;
+    margin-top: auto;
+    font-family: var(--font-body);
+}
+
+.site-footer h5, .site-footer h6 {
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.site-footer a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    color: var(--accent);
+}
+
+/* --- Alert sederhana --- */
+.alert {
+    border-radius: var(--radius-md);
+    border: none;
+    font-weight: 500;
+}
+
+/* --- Utility --- */
+.rounded-4 { border-radius: var(--radius-lg) !important; }
+
+::selection {
+    background: var(--accent);
+    color: var(--accent-contrast);
+}
+
+/* Scrollbar halus */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-body); }
+::-webkit-scrollbar-thumb { background: #2a3446; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #3a4a63; }
+
+/* --- Responsif --- */
+@media (max-width: 767.98px) {
+    main {
+        padding: 1.25rem 1rem;
+        margin: 1rem auto;
+        border-radius: var(--radius-md);
+    }
+
+    .site-navbar .nav-link {
+        padding: 0.6rem 1rem !important;
+    }
+}

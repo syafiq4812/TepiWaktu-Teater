@@ -1,40 +1,67 @@
 <?php
-require_once('./class/class.User.php');
-require_once('./class/class.Mail.php');
+require_once(__DIR__ . '/../Class/class.user.php');
+require_once(__DIR__ . '/../Class/class.Mail.php');
 
 if (isset($_POST['btnSubmit'])) {
-    $inputemail = $_POST["email"];
-    $objUser = new User();
-    $objUser->ValidateEmail($inputemail);
+    $name     = trim($_POST['name'] ?? '');
+    $email    = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    if ($objUser->hasil) {
-        echo "<script>alert('Email sudah terdaftar');</script>";
+    // --- Validasi input ---
+    $errors = [];
+
+    if (strlen($name) < 2 || strlen($name) > 30) {
+        $errors[] = 'Nama harus berisi 2-30 karakter.';
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 30) {
+        $errors[] = 'Format email tidak valid (maks 30 karakter).';
+    }
+
+    if (strlen($password) < 8) {
+        $errors[] = 'Password minimal 8 karakter.';
+    }
+
+    if (!empty($errors)) {
+        $pesan = implode('\\n', $errors);
+        echo "<script>alert('$pesan');</script>";
     } else {
-        $objUser->email = $_POST["email"];
-        $password = $_POST['password'];
-        $objUser->password = password_hash($password, PASSWORD_DEFAULT);
-        $objUser->name = $_POST["name"];
-        $objUser->role = 'employee'; // Role default sesuai kode asli Anda
-        
-        $objUser->AddUser();
+        $objUser = new User();
+        $objUser->ValidateEmail($email);
 
         if ($objUser->hasil) {
-            $message = "
-                <h2>Registrasi Berhasil</h2>
-                <p> Selamat <b>{$objUser->name}</b>, anda telah terdaftar pada Web <b>TEPI WAKTU PRODUCTION</b>.</p>
-                <p>Berikut informasi akun Anda:</p>
-                <ul>
-                    <li>Username: {$objUser->email}</li>
-                    <li>Password: {$password}</li>
-                </ul>
+            echo "<script>alert('Email sudah terdaftar');</script>";
+        } else {
+            $objUser->email    = $email;
+            $objUser->password = password_hash($password, PASSWORD_DEFAULT);
+            $objUser->name     = $name;
+            $objUser->role     = 'employee'; // Role default saat registrasi
 
-                <p> Silakan login untuk mengakses sistem.</p>
-                ";
+            $tambah = $objUser->AddUser();
 
-                Mail::SendMail($objUser->email, $objUser->name, 'Registrasi berhasil', $message);
+            if ($tambah) {
+                // Email konfirmasi TANPA menyertakan password (keamanan akun)
+                $message = "
+                    <h2>Registrasi Berhasil</h2>
+                    <p>Selamat <b>" . htmlspecialchars($name) . "</b>, anda telah terdaftar pada Web <b>TEPI WAKTU PRODUCTION</b>.</p>
+                    <p>Berikut informasi akun Anda:</p>
+                    <ul>
+                        <li>Email: " . htmlspecialchars($email) . "</li>
+                    </ul>
+                    <p>Silakan login dengan email dan password yang Anda buat saat mendaftar.</p>
+                    ";
 
-            echo "<script>alert('Registrasi berhasil, Silahkan Login');</script>";
-            echo "<script>window.location='main.php?Pages=login';</script>";
+                try {
+                    Mail::SendMail($email, $name, 'Registrasi berhasil', $message);
+                } catch (Exception $e) {
+                    // Email gagal kirim tidak menggagalkan registrasi
+                }
+
+                echo "<script>alert('Registrasi berhasil, Silahkan Login');</script>";
+                echo "<script>window.location='Main.php?Pages=login';</script>";
+            } else {
+                echo "<script>alert('Registrasi gagal, silakan coba lagi.');</script>";
+            }
         }
     }
 }
@@ -42,36 +69,38 @@ if (isset($_POST['btnSubmit'])) {
 
 <div class="row justify-content-center">
     <div class="col-md-5">
-        <div class="card bg-dark text-white border-0 shadow-lg" style="background: rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1) !important;">
-            <div class="card-header bg-transparent border-0 pt-4 text-center">
-                <h3 class="fw-bold">Daftar Akun</h3>
-                <p class="text-secondary small">Lengkapi data untuk bergabung dengan Tepi Waktu</p>
+        <div class="card glass-card overflow-hidden">
+            <div class="text-center p-4 pb-0">
+                <p class="section-eyebrow mb-2">Bergabung Bersama Kami</p>
+                <h3 class="fw-bold" style="font-family: var(--font-display);">Daftar Akun</h3>
+                <p class="text-secondary small mb-0">Lengkapi data untuk bergabung dengan Tepi Waktu</p>
             </div>
             <div class="card-body p-4">
                 <form action="" method="post">
                     <div class="mb-3">
-                        <label for="name" class="form-label small text-secondary">Nama Lengkap</label>
-                        <input type="text" name="name" id="name" class="form-control bg-dark text-white border-secondary" placeholder="Nama Anda" maxlength="30" required>
+                        <label for="name" class="form-label">Nama Lengkap</label>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Nama Anda" maxlength="30" required>
                     </div>
-                    
+
                     <div class="mb-3">
-                        <label for="email" class="form-label small text-secondary">Email Address</label>
-                        <input type="email" name="email" id="email" class="form-control bg-dark text-white border-secondary" placeholder="nama@email.com" maxlength="30" required>
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" name="email" id="email" class="form-control" placeholder="nama@email.com" maxlength="30" required>
                     </div>
-                    
+
                     <div class="mb-4">
-                        <label for="password" class="form-label small text-secondary">Password</label>
-                        <input type="password" name="password" id="password" class="form-control bg-dark text-white border-secondary" placeholder="********" maxlength="30" required>
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Minimal 8 karakter" minlength="8" required>
+                        <div class="form-text text-secondary">Gunakan minimal 8 karakter.</div>
                     </div>
-                    
+
                     <div class="d-grid gap-2">
-                        <input type="submit" class="btn btn-info-tiket py-2" value="Daftar Sekarang" name="btnSubmit">
-                        <a href="Main.php?Pages=Home" class="btn btn-outline-light py-2">Batal</a>
+                        <button type="submit" name="btnSubmit" class="btn btn-gold py-2 fw-bold">Daftar Sekarang</button>
+                        <a href="Main.php?Pages=Home" class="btn btn-ghost py-2">Batal</a>
                     </div>
                 </form>
             </div>
-            <div class="card-footer bg-transparent border-0 text-center pb-4">
-                <p class="small text-secondary mb-0">Sudah punya akun? <a href="Main.php?Pages=login" class="text-info text-decoration-none">Masuk di sini</a></p>
+            <div class="text-center px-4 pb-4">
+                <p class="small text-secondary mb-0">Sudah punya akun? <a href="Main.php?Pages=login" class="fw-semibold text-decoration-none">Masuk di sini</a></p>
             </div>
         </div>
     </div>

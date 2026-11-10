@@ -1,214 +1,63 @@
-<style>
-    .gallery-wrapper {
-        width: 100%;
-        background-color: transparent; 
-        padding: 1rem 0 3rem 0; 
-    }
+<div class="container py-4">
 
-    .gallery-title {
-        text-align: center;
-        color: #ffffff;
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin-bottom: 3rem;
-        letter-spacing: 3px;
-        text-shadow: 0 4px 15px rgba(11, 61, 145, 0.8); /* Glow biru sesuai tema */
-    }
-
-    .gallery-row {
-        display: flex;
-        flex-wrap: wrap;
-        min-height: 75vh; 
-        width: 100%;
-        margin-bottom: 3rem; 
-        border-radius: 12px;
-        overflow: hidden; 
-    }
-
-    .gallery-row:last-child {
-        margin-bottom: 0;
-    }
-
-     Membalik Posisi Kiri-Kanan 
-    .gallery-row.reverse {
-        flex-direction: row-reverse;
-    }
-
-    .quote-section {
-        flex: 1 1 50%;
-        background-color: #0b3d91; 
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 4rem;
-        box-sizing: border-box;
-        position: relative;
-    }
-
-    .quote-content {
-        max-width: 85%;
-        text-align: left;
-    }
-
-    .gallery-row.reverse .quote-content {
-        text-align: right;
-    }
-
-    .quote-content h2 {
-        font-size: 2.8rem;
-        font-style: italic;
-        font-weight: bold;
-        line-height: 1.3;
-        margin-bottom: 1.5rem;
-        text-shadow: 0 4px 15px rgba(11, 61, 145, 0.6); 
-    }
-
-    .quote-content p {
-        font-size: 1.2rem;
-        opacity: 0.85;
-        letter-spacing: 1px;
-    }
-
-    .image-section {
-        flex: 1 1 50%;
-        position: relative;
-        background-size: cover;
-        background-position: center;
-        min-height: 400px;
-    }
-
-    .image-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 45%; 
-        height: 100%;
-        background: linear-gradient(to right, #0b3d91 0%, rgba(11, 61, 145, 0.8) 20%, transparent 100%);
-    }
-
-    .gallery-row.reverse .image-section::before {
-        left: auto;
-        right: 0;
-        background: linear-gradient(to left, #0b3d91 0%, rgba(11, 61, 145, 0.8) 20%, transparent 100%);
-    }
- 
-    @media (max-width: 768px) {
-        .gallery-title {
-            font-size: 1.8rem;
-        }
-
-        .gallery-row, .gallery-row.reverse {
-            flex-direction: column; 
-            margin-bottom: 2rem;
-        }
-        
-        .gallery-row.reverse .quote-content {
-            text-align: left; 
-        }
-
-        .image-section::before, .gallery-row.reverse .image-section::before {
-            width: 100%;
-            height: 50%;
-            top: 0;
-            left: 0;
-            right: auto;
-            background: linear-gradient(to bottom, #0b3d91 0%, rgba(11, 61, 145, 0.8) 20%, transparent 100%);
-        }
-    }
-</style>
-
-<div class="container gallery-wrapper">
-    
-    <h1 class="gallery-title">GALLERY TEPI WAKTU TEATER</h1>
-
-    <div class="gallery-row">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Keringat di ruang latihan adalah bayaran mahal untuk tepuk tangan di atas panggung."</h2>
-                <p>— Tepi Waktu Teater</p>
-            </div>
-        </div>
-        <div class="image-section" style="background-image: url('img/foto1.jpg');"></div>
+    <div class="text-center mb-5">
+        <p class="section-eyebrow mb-2">Dokumentasi</p>
+        <h2 class="section-title display-4 mb-3">Gallery Teater Tepi Waktu</h2>
+        <p class="text-secondary mx-auto" style="max-width: 600px;">
+            Potongan momen dari balik layar hingga panggung utama.
+        </p>
     </div>
 
-    <div class="gallery-row reverse">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Bukan tentang menghafal naskah, tapi bagaimana naskah itu hidup di dalam diri kita."</h2>
-                <p>— Tepi Waktu Teater</p>
+    <?php
+    // Data kutipan + gambar (sinkron dengan file di folder img/)
+    $galeri = [
+        ['foto1.JPG', 'Keringat di ruang latihan adalah bayaran mahal untuk tepuk tangan di atas panggung.'],
+        ['foto2.JPG', 'Bukan tentang menghafal naskah, tapi bagaimana naskah itu hidup di dalam diri kita.'],
+        ['foto3.JPG', 'Satu panggung, puluhan ego, disatukan oleh satu cerita.'],
+        ['foto4.JPG', 'Cahaya lampu panggung tak akan terang tanpa kerja keras dalam gelapnya backstage.'],
+        ['foto5.JPG', 'Setiap karakter punya rahasia, tugas kitalah untuk membongkarnya di depan penonton.'],
+        ['foto6.JPG', 'Wajah baru di depan cermin, jiwa lama yang siap meresapi peran.'],
+        ['foto7.JPG', 'Setiap arahan adalah jembatan antara imajinasi dan realitas panggung.'],
+        ['foto8.JPG', 'Keheningan di balik panggung sebelum tirai terbuka adalah musik yang paling mendebarkan.'],
+        ['foto9.JPG', 'Bukan tentang siapa yang paling bersinar, tapi bagaimana kita saling menerangi.'],
+    ];
+
+    foreach ($galeri as $index => $item):
+        $foto = $item[0];
+        $kutipan = $item[1];
+        $balik = ($index % 2 === 1); // baris genap dibalik
+    ?>
+    <div class="row align-items-stretch g-0 mb-4 gallery-row <?php echo $balik ? 'flex-row-reverse' : ''; ?>"
+         style="border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); min-height: 320px;">
+
+        <!-- Sisi kutipan -->
+        <div class="col-lg-6 d-flex align-items-center p-4 p-md-5"
+             style="background: linear-gradient(135deg, rgba(11,61,145,0.55), rgba(10,14,23,0.9));">
+            <div class="<?php echo $balik ? 'text-md-end' : ''; ?>">
+                <i class="bi bi-quote fs-1 text-accent d-block mb-2" style="opacity: 0.7;"></i>
+                <h3 class="fw-bold mb-3" style="font-family: var(--font-display); font-style: italic; line-height: 1.4; font-size: 1.5rem;">
+                    &ldquo;<?php echo htmlspecialchars($kutipan); ?>&rdquo;
+                </h3>
+                <p class="mb-0 small text-uppercase text-secondary" style="letter-spacing: 2px;">&mdash; Tepi Waktu Teater</p>
             </div>
         </div>
-        <div class="image-section" style="background-image: url('img/foto2.jpg');"></div>
+
+        <!-- Sisi gambar -->
+        <div class="col-lg-6">
+            <div class="img-wrapper h-100" style="border-radius: 0;">
+                <img src="img/<?php echo htmlspecialchars($foto); ?>"
+                     class="w-100 h-100 img-interactive"
+                     style="object-fit: cover; min-height: 320px;"
+                     alt="Dokumentasi <?php echo $index + 1; ?>"
+                     loading="lazy">
+            </div>
+        </div>
+
+    </div>
+    <?php endforeach; ?>
+
+    <div class="text-center mt-5">
+        <a href="Main.php?Pages=Produk" class="btn btn-gold px-5">Lihat Jadwal Pertunjukan</a>
     </div>
 
-    <div class="gallery-row">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Satu panggung, puluhan ego, disatukan oleh satu cerita."</h2>
-                <p>— Tepi Waktu Teater</p>
-            </div>
-        </div>
-        <div class="image-section" style="background-image: url('img/foto3.jpg');"></div>
-    </div>
-
-    <div class="gallery-row reverse">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Cahaya lampu panggung tak akan terang tanpa kerja keras dalam gelapnya backstage."</h2>
-                <p>— Tepi Waktu Teater</p>
-            </div>
-        </div>
-        <div class="image-section" style="background-image: url('img/foto4.jpg');"></div>
-    </div>
-
-    <div class="gallery-row">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Setiap karakter punya rahasia, tugas kitalah untuk membongkarnya di depan penonton."</h2>
-                <p>— Tepi Waktu Teater</p>
-            </div>
-        </div>
-        <div class="image-section" style="background-image: url('img/foto5.jpg');"></div>
-    </div>
-    <div class="gallery-row reverse">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Wajah baru di depan cermin, jiwa lama yang siap meresapi peran."</h2>
-                <p>— Tepi Waktu Teater</p>
-            </div>
-        </div>
-        <div class="image-section" style="background-image: url('img/foto6.jpg');"></div>
-    </div>
-
-    <div class="gallery-row">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Setiap arahan adalah jembatan antara imajinasi dan realitas panggung."</h2>
-                <p>— Tepi Waktu Teater</p>
-            </div>
-        </div>
-        <div class="image-section" style="background-image: url('img/foto7.jpg');"></div>
-    </div>
-
-    <div class="gallery-row reverse">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Keheningan di balik panggung sebelum tirai terbuka adalah musik yang paling mendebarkan."</h2>
-                <p>— Tepi Waktu Teater</p>
-            </div>
-        </div>
-        <div class="image-section" style="background-image: url('img/foto8.jpg');"></div>
-    </div>
-
-    <div class="gallery-row">
-        <div class="quote-section">
-            <div class="quote-content">
-                <h2>"Bukan tentang siapa yang paling bersinar, tapi bagaimana kita saling menerangi."</h2>
-                <p>— Tepi Waktu Teater</p>
-            </div>
-        </div>
-        <div class="image-section" style="background-image: url('img/foto9.jpg');"></div>
-    </div>
 </div>

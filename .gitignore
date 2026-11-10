@@ -1,0 +1,16 @@
+# Konfigurasi rahasia (jangan pernah di-commit)
+/config.php
+
+# Log webhook
+Pages/log_email_webhook.txt
+log_email_webhook.txt
+
+# Dependency (install ulang dengan composer install)
+/vendor/
+
+# File sistem & editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

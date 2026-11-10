@@ -8,140 +8,119 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-require_once('inc.koneksi.php');
-require_once('./class/class.User.php');
-require_once('./class/class.Produk.php');
-require_once('./class/class.Transaction.php');
+require_once __DIR__ . '/inc.koneksi.php';
+require_once __DIR__ . '/Class/class.user.php';
+require_once __DIR__ . '/Class/class.Produk.php';
+require_once __DIR__ . '/Class/class.Transaction.php';
 
 $objUser = new User();
 $objProd = new Produk();
 $objTrx  = new Transaction();
 
 $page = isset($_GET['page']) ? strtolower($_GET['page']) : 'transaksi';
-?>
 
+// Halaman mana yang sedang aktif (untuk highlight nav)
+$navAktif = 'transaksi';
+if (strpos($page, 'produk') !== false) {
+    $navAktif = 'produk';
+} else if (strpos($page, 'user') !== false) {
+    $navAktif = 'user';
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Elegant Soft Dark</title>
+    <title>Admin Dashboard - Tepi Waktu Teater</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            background-image: linear-gradient(rgba(5, 10, 18, 0.7), rgba(5, 10, 18, 0.7)), url('Background.jpeg'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: white; 
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 1.25rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-pills .nav-link {
-            color: #94a3b8;
-            border-radius: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            transition: all 0.3s ease;
-        }
-        .nav-pills .nav-link:hover {
-            color: #e2e8f0;
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .nav-pills .nav-link.active {
-            background: #3b82f6;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-logout {
-            color: #ef4444 !important;
-            font-weight: 500;
-        }
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .text-accent {
-            color: #38bdf8;
-            font-weight: 600;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold m-0" style="letter-spacing: -0.5px;">Admin Dashboard</h2>
-        <div class="text-secondary small">
-            Login sebagai: <span class="text-accent"><?php echo $_SESSION['name']; ?></span>
+
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <p class="section-eyebrow mb-1">Panel Pengelola</p>
+            <h2 class="fw-bold m-0" style="font-family: var(--font-display); letter-spacing: -0.5px;">Admin Dashboard</h2>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <div class="text-secondary small">
+                Login sebagai:
+                <span class="text-accent fw-semibold"><?php echo htmlspecialchars($_SESSION['name']); ?></span>
+            </div>
+            <a href="Main.php?Pages=Home" class="btn btn-ghost btn-sm">
+                <i class="bi bi-house me-1"></i>Situs
+            </a>
+            <a href="Main.php?Pages=logout" class="btn btn-sm" style="color: var(--danger); border: 1px solid rgba(248,113,113,0.4);">
+                <i class="bi bi-box-arrow-right me-1"></i>Logout
+            </a>
         </div>
     </div>
 
-    <div class="glass-card p-2 mb-4 d-flex justify-content-between align-items-center">
+    <!-- Navigasi -->
+    <div class="glass-card p-2 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
         <ul class="nav nav-pills flex-grow-1">
             <li class="nav-item">
-                <a class="nav-link fw-medium <?php echo ($page == 'transaksi') ? 'active' : ''; ?>" 
-                   href="dashboardAdmin.php?page=transaksi">Riwayat Transaksi</a>
+                <a class="nav-link fw-medium <?php echo ($navAktif === 'transaksi') ? 'active' : ''; ?>"
+                   href="dashboardadmin.php?page=transaksi">
+                    <i class="bi bi-receipt me-1"></i>Riwayat Transaksi
+                </a>
             </li>
-            <li class="nav-item mx-2">
-                <a class="nav-link fw-medium <?php echo (strpos($page, 'produk') !== false) ? 'active' : ''; ?>" 
-                   href="dashboardAdmin.php?page=produk">Kelola Produk</a>
+            <li class="nav-item mx-lg-2">
+                <a class="nav-link fw-medium <?php echo ($navAktif === 'produk') ? 'active' : ''; ?>"
+                   href="dashboardadmin.php?page=produk">
+                    <i class="bi bi-music-note-beamed me-1"></i>Kelola Produk
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link fw-medium <?php echo ($page == 'user') ? 'active' : ''; ?>" 
-                   href="dashboardAdmin.php?page=user">Daftar User</a>
+                <a class="nav-link fw-medium <?php echo ($navAktif === 'user') ? 'active' : ''; ?>"
+                   href="dashboardadmin.php?page=user">
+                    <i class="bi bi-people me-1"></i>Daftar User
+                </a>
             </li>
         </ul>
-        <a class="nav-link btn-logout px-3 py-2 rounded" href="Main.php?Pages=logout">Logout</a>
     </div>
 
+    <!-- Konten -->
     <div class="glass-card p-4 p-md-5">
         <?php
         switch ($page) {
             case 'transaksi':
-                include './pages/admin/transaksi.php';
+                include __DIR__ . '/Pages/admin/transaksi.php';
                 break;
             case 'produk':
-                include './pages/admin/produk.php';
+                include __DIR__ . '/Pages/admin/produk.php';
                 break;
             case 'tambahproduk':
-                include './pages/admin/produk_add.php';
+                include __DIR__ . '/Pages/admin/produk_add.php';
                 break;
             case 'editproduk':
-                include './pages/admin/produk_edit.php';
+                include __DIR__ . '/Pages/admin/produk_edit.php';
                 break;
             case 'hapusproduk':
-                include './pages/admin/produk_delete.php';
+                include __DIR__ . '/Pages/admin/produk_delete.php';
                 break;
             case 'user':
-                include './pages/admin/user.php';
+                include __DIR__ . '/Pages/admin/user.php';
                 break;
             case 'edituser':
-                include './pages/admin/user_edit.php';
+                include __DIR__ . '/Pages/admin/user_edit.php';
                 break;
             case 'hapususer':
-                include './pages/admin/user_delete.php';
+                include __DIR__ . '/Pages/admin/user_delete.php';
                 break;
             default:
-                include './pages/admin/transaksi.php';
+                include __DIR__ . '/Pages/admin/transaksi.php';
                 break;
         }
         ?>
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

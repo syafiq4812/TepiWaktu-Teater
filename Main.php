@@ -68,7 +68,11 @@ include "inc.koneksi.php";
                 include "dashboardemployee.php";
                 break;
             case 'dashboardAdmin':
-                include "dashboardAdmin.php";
+                include "dashboardadmin.php";
+                break;
+
+            case 'Contact':
+                include "Pages/Contact.php";
                 break;
 
             // Halaman jika parameter Pages tidak dikenal

@@ -1,5 +1,5 @@
 <?php
-// Proteksi halaman: Jika belum login, tendang ke halaman login
+// Proteksi: wajib login
 if (!isset($_SESSION['role'])) {
     echo "<script>alert('Silahkan login untuk melihat profil'); window.location='Main.php?Pages=login';</script>";
     exit();
@@ -8,55 +8,63 @@ if (!isset($_SESSION['role'])) {
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card bg-dark text-white border-0 shadow-lg" style="background: rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1) !important;">
-            
-            <div class="card-header bg-transparent border-0 pt-5 text-center">
-                <div class="user-avatar mx-auto mb-3 shadow" style="width: 100px; height: 100px; font-size: 40px; border: 3px solid #007bff;">
-                    <?php echo strtoupper(substr($_SESSION['name'], 0, 1)); ?>
+
+        <div class="card glass-card overflow-hidden">
+            <!-- Header profil -->
+            <div class="text-center pt-5 pb-4 px-4" style="background: linear-gradient(135deg, rgba(245,185,66,0.10), rgba(56,189,248,0.06)); border-bottom: 1px solid var(--border-subtle);">
+                <div class="user-avatar mx-auto mb-3 shadow"
+                     style="width: 96px; height: 96px; font-size: 38px; border: 3px solid var(--accent); background: var(--bg-solid); color: var(--accent);">
+                    <?php echo htmlspecialchars(strtoupper(substr($_SESSION['name'], 0, 1))); ?>
                 </div>
-                <h3 class="fw-bold"><?php echo $_SESSION['name']; ?></h3>
-                <span class="badge bg-primary px-3 rounded-pill"><?php echo strtoupper($_SESSION['role']); ?> MEMBER</span>
+                <h3 class="fw-bold mb-1" style="font-family: var(--font-display);">
+                    <?php echo htmlspecialchars($_SESSION['name']); ?>
+                </h3>
+                <span class="badge" style="background: rgba(245,185,66,0.15); color: var(--accent);">
+                    <?php echo htmlspecialchars(strtoupper($_SESSION['role'])); ?> MEMBER
+                </span>
             </div>
 
-            <div class="card-body px-5 py-4">
+            <!-- Detail -->
+            <div class="card-body p-4 p-md-5">
                 <div class="row mb-4 align-items-center">
                     <div class="col-sm-4">
-                        <label class="text-secondary small text-uppercase fw-bold">Email Address</label>
+                        <label class="text-secondary small text-uppercase fw-bold" style="letter-spacing: 1px;">Email Address</label>
                     </div>
                     <div class="col-sm-8">
-                        <p class="mb-0 fs-5"><?php echo $_SESSION['email']; ?></p>
+                        <p class="mb-0"><i class="bi bi-envelope me-2 text-accent"></i><?php echo htmlspecialchars($_SESSION['email']); ?></p>
                     </div>
                 </div>
 
                 <div class="row mb-4 align-items-center">
                     <div class="col-sm-4">
-                        <label class="text-secondary small text-uppercase fw-bold">Account Status</label>
+                        <label class="text-secondary small text-uppercase fw-bold" style="letter-spacing: 1px;">Account Status</label>
                     </div>
                     <div class="col-sm-8">
-                        <p class="mb-0 text-info"><i class="bi bi-check-circle-fill me-2"></i>Verified Account</p>
+                        <p class="mb-0" style="color: var(--success);"><i class="bi bi-check-circle-fill me-2"></i>Verified Account</p>
                     </div>
                 </div>
 
                 <div class="row mb-4 align-items-center">
                     <div class="col-sm-4">
-                        <label class="text-secondary small text-uppercase fw-bold">Join Date</label>
+                        <label class="text-secondary small text-uppercase fw-bold" style="letter-spacing: 1px;">User ID</label>
                     </div>
                     <div class="col-sm-8">
-                        <p class="mb-0"><?php echo date('d F Y'); // Menampilkan tanggal hari ini sebagai simulasi ?></p>
+                        <p class="mb-0">#<?php echo (int) $_SESSION['userid']; ?></p>
                     </div>
                 </div>
 
-                <hr style="border-color: rgba(255,255,255,0.1);">
+                <hr class="border-secondary opacity-25">
 
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <a href="Main.php?Pages=Home" class="btn btn-outline-light px-4 rounded-pill">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-3">
+                    <a href="Main.php?Pages=Home" class="btn btn-ghost px-4">
                         <i class="bi bi-arrow-left me-2"></i>Kembali
                     </a>
-                    <a href="Main.php?Pages=riwayat" class="btn btn-info-tiket px-4">
-                        Lihat Riwayat Tiket
+                    <a href="Main.php?Pages=riwayat" class="btn btn-gold px-4">
+                        <i class="bi bi-receipt me-2"></i>Lihat Riwayat Tiket
                     </a>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
